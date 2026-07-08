@@ -241,7 +241,7 @@ export function Debug() {
       <p className={styles.subtitle}>{t("debug.subtitle")}</p>
 
       <div className={styles.badgeRow}>
-        <Badge appearance="outline">since 1.1.0</Badge>
+        <Badge appearance="outline">event injection</Badge>
         <Badge appearance="outline">60+ APIs</Badge>
         <Badge appearance="outline">45+ pipe commands</Badge>
       </div>

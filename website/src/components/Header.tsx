@@ -16,7 +16,6 @@ import {
 import { Link } from "react-router";
 import { useTranslation } from "react-i18next";
 import { SearchDialog } from "./SearchDialog";
-import versionData from "../../../version.json";
 
 const useStyles = makeStyles({
   header: {
@@ -54,17 +53,6 @@ const useStyles = makeStyles({
     fontSize: "11px",
     fontWeight: 800,
     letterSpacing: "0.5px",
-  },
-  version: {
-    fontSize: "11px",
-    fontWeight: 500,
-    color: tokens.colorNeutralForeground4,
-    backgroundColor: tokens.colorNeutralBackground3,
-    paddingBlock: "2px",
-    paddingInline: "6px",
-    borderRadius: "4px",
-    marginInlineStart: "6px",
-    lineHeight: "16px",
   },
   spacer: {
     flex: 1,
@@ -177,7 +165,6 @@ export function Header({ themeMode, onToggleTheme, onToggleMobileMenu }: HeaderP
         <Link to="/" className={styles.brand}>
           <div className={styles.brandIcon}>UI</div>
           <span>CORE UI</span>
-          <span className={styles.version}>v{versionData.version}</span>
         </Link>
         <div className={styles.spacer} />
         <div className={styles.actions}>
@@ -210,7 +197,7 @@ export function Header({ themeMode, onToggleTheme, onToggleMobileMenu }: HeaderP
               appearance="subtle"
               icon={<CodeRegular />}
               as="a"
-              href="https://github.com"
+              href="https://github.com/ghboke/core-ui"
               target="_blank"
               size="small"
               aria-label="GitHub"

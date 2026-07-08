@@ -13,7 +13,6 @@
 > **A 4.1 MB single DLL that ships Office / VS Code-grade UI on Windows.**
 > No Chromium. No .NET. No 40 MB of Qt DLLs and moc/uic preprocessors. One C header, one `.uix` single-file component — done.
 
-![version](https://img.shields.io/badge/version-1.7.0.253-blue)
 ![license](https://img.shields.io/badge/license-MIT-green)
 ![platform](https://img.shields.io/badge/platform-Windows%2010%2B-lightgrey)
 ![size](https://img.shields.io/badge/dll-4.1MB-brightgreen)
@@ -234,8 +233,8 @@ Version format: `MAJOR.MINOR.PATCH.BUILD`, queryable at runtime:
 
 ```c
 int major, minor, patch;
-ui_core_version(&major, &minor, &patch);   // 1, 7, 0
-const char* v = ui_core_version_string();   // "1.7.0.253"
+ui_core_version(&major, &minor, &patch);
+const char* v = ui_core_version_string();   // "MAJOR.MINOR.PATCH.BUILD"
 ```
 
 ## Where It Fits

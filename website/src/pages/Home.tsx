@@ -246,7 +246,7 @@ export function Home() {
               iconPosition="after"
               className={styles.outlineBtn}
               as="a"
-              href="https://github.com"
+              href="https://github.com/ghboke/core-ui"
               target="_blank"
             >
               {t("home.viewGithub")}

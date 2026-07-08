@@ -40,14 +40,14 @@ const useStyles = makeStyles({
 });
 
 const buildCode = `# Clone the repository
-git clone https://github.com/user/core-ui.git
+git clone https://github.com/ghboke/core-ui.git
 cd core-ui
 
-# Build with CMake
-cmake -B build -DCMAKE_BUILD_TYPE=Release
-cmake --build build --config Release
+# Build with the bundled PowerShell script
+powershell -NoProfile -ExecutionPolicy Bypass \`
+  -File scripts/build-clang-cl.ps1 -Target core-ui
 
-# Output: build/Release/core-ui.dll + core-ui.lib`;
+# Output: build output directory contains core-ui.dll + core-ui.lib`;
 
 const minimalExample = `#include "ui_core.h"
 
@@ -68,7 +68,7 @@ int main() {
 
     // Build UI tree
     UiWidget root = ui_vbox();
-    ui_widget_set_padding(root, 24);
+    ui_widget_set_padding_uniform(root, 24);
     ui_widget_set_gap(root, 16);
 
     UiWidget title = ui_label(L"Welcome to Core UI");
@@ -117,10 +117,15 @@ export default {
 </template>`;
 
 const cmakeIntegration = `# CMakeLists.txt
-find_package(core-ui REQUIRED)
+add_executable(myapp WIN32 main.cpp)
+target_include_directories(myapp PRIVATE third_party/core-ui/include)
+target_link_libraries(myapp PRIVATE
+    third_party/core-ui/lib/dynamic/core-ui.lib)
 
-add_executable(myapp main.cpp)
-target_link_libraries(myapp PRIVATE core-ui::core-ui)`;
+add_custom_command(TARGET myapp POST_BUILD
+    COMMAND \${CMAKE_COMMAND} -E copy_if_different
+        \${CMAKE_SOURCE_DIR}/third_party/core-ui/lib/dynamic/core-ui.dll
+        $<TARGET_FILE_DIR:myapp>)`;
 
 export function GettingStarted() {
   const styles = useStyles();

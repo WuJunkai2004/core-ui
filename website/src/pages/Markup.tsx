@@ -77,10 +77,10 @@ const directives = `<template>
   <!-- 事件 @event="method" 或表达式 -->
   <input @change="onName($event)" placeholder="name"/>
 
-  <!-- v-if 条件挂载 / 卸载 -->
+  <!-- v-if 条件挂载 / 卸载；v-show 只切换可见性 -->
   <label v-if="page === 'home'">Home page</label>
-  <label v-else-if="page === 'about'">About page</label>
-  <label v-else>Unknown</label>
+  <label v-if="page === 'about'">About page</label>
+  <label v-show="page !== 'home' && page !== 'about'">Unknown</label>
 
   <!-- v-for 列表渲染（推荐带 :key） -->
   <div v-for="(it, i) in visible" :key="it.id" class="row">

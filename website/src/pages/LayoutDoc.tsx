@@ -61,20 +61,6 @@ const gridExample = `<!-- core-ui doesn't ship a true CSS Grid; emulate with sta
   </div>
 </div>`;
 
-const splitViewExample = `// SplitView ships as a C-only widget (no first-class .uix tag yet).
-UiWidget sv = ui_split_view();
-ui_split_view_set_mode(sv, UI_SPLIT_COMPACT_INLINE);
-ui_split_view_set_pane_length(sv, 260, 48);
-ui_split_view_set_pane(sv, sidebar);
-ui_split_view_set_content(sv, content);
-ui_split_view_set_open(sv, 1);`;
-
-const splitterExample = `// Splitter ships as a C-only widget today.
-UiWidget split = ui_splitter();
-ui_splitter_set_ratio(split, 0.3f);
-ui_splitter_add_child(split, leftPane);
-ui_splitter_add_child(split, rightPane);`;
-
 const scrollExample = `// ScrollView with auto-scrollbar
 UiWidget scroll = ui_scroll_view();
 UiWidget content = ui_vbox();
@@ -110,18 +96,6 @@ export function LayoutDoc() {
         <h2 className={styles.sectionTitle}>{t("layout.gridTitle")}</h2>
         <p className={styles.paragraph}>{t("layout.gridDesc")}</p>
         <CodeBlock code={gridExample} language=".uix" />
-      </div>
-
-      <div className={styles.section}>
-        <h2 className={styles.sectionTitle}>{t("layout.splitViewTitle")}</h2>
-        <p className={styles.paragraph}>{t("layout.splitViewDesc")}</p>
-        <CodeBlock code={splitViewExample} language="C" />
-      </div>
-
-      <div className={styles.section}>
-        <h2 className={styles.sectionTitle}>{t("layout.splitterTitle")}</h2>
-        <p className={styles.paragraph}>{t("layout.splitterDesc")}</p>
-        <CodeBlock code={splitterExample} language="C" />
       </div>
 
       <div className={styles.section}>

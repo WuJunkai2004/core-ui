@@ -105,9 +105,9 @@ function getRelatedApiFunctions(controlName: string) {
     "ImageView": ["ui_image_view", "ui_image_load_file", "ui_image_set_pixels", "ui_image_clear", "ui_image_get_zoom", "ui_image_set_zoom", "ui_image_fit", "ui_image_reset", "ui_image_set_rotation", "ui_image_set_checkerboard"],
     "IconButton": ["ui_icon_button", "ui_icon_button_set_svg", "ui_icon_button_set_ghost", "ui_icon_button_set_icon_color", "ui_icon_button_set_icon_padding"],
     "TitleBar": ["ui_titlebar", "ui_titlebar_set_title", "ui_titlebar_show_buttons", "ui_titlebar_show_icon", "ui_titlebar_set_bg_color", "ui_titlebar_add_widget"],
-    "Dialog": ["ui_dialog", "ui_dialog_show", "ui_dialog_hide", "ui_dialog_set_ok_text", "ui_dialog_set_cancel_text", "ui_dialog_set_show_cancel"],
+    "Dialog": ["ui_msgbox", "ui_msgbox_ex"],
     "Toast": ["ui_toast", "ui_toast_ex"],
-    "ContextMenu": ["ui_menu_create", "ui_menu_destroy", "ui_menu_add_item", "ui_menu_add_item_ex", "ui_menu_add_separator", "ui_menu_add_submenu", "ui_menu_set_enabled", "ui_menu_show", "ui_menu_close"],
+    "ContextMenu": ["ui_page_menu", "ui_menu_show", "ui_menu_close", "ui_window_on_menu", "ui_menu_item_id", "ui_menu_item_attr", "ui_menu_set_bg_color", "ui_menu_set_backdrop_blur"],
     "Separator": ["ui_separator", "ui_vseparator"],
   };
 
@@ -313,7 +313,7 @@ ui_widget_add_child(root, row);` },
 <button @click="page = 1">Page 1</button>
 
 <div v-if="page === 0" class="page"><label>Page 0</label></div>
-<div v-else-if="page === 1" class="page"><label>Page 1</label></div>` },
+<div v-if="page === 1" class="page"><label>Page 1</label></div>` },
       { lang: "C++", code: `auto* stack = g_layout.FindAs<ui::StackWidget>("pages");
 stack->SetActiveIndex(1);
 stack->DoLayout();` },
@@ -335,20 +335,26 @@ ui_scroll_set_content(scroll, content);
 ui_widget_set_expand(scroll, 1);` },
     ],
     "SplitView": [
-      { lang: "C", code: `// SplitView is currently best built via the C API (no first-class .uix tag).
-UiWidget sv = ui_split_view();
-ui_split_view_set_mode(sv, UI_SPLIT_COMPACT_INLINE);
-ui_split_view_set_pane_length(sv, 260, 48);
-ui_split_view_set_open(sv, 1);
-ui_split_view_set_pane(sv, sidebar);
-ui_split_view_set_content(sv, content);` },
+      { lang: ".uix", code: `<!-- No public SplitView C API is exported currently.
+     Compose a navigation view with a row container, fixed sidebar,
+     and flex: 1 content pane. -->
+<style>
+  .shell { flex-direction: row; flex: 1; }
+  .side  { width: 240px; background: var(--sidebar-bg); }
+  .main  { flex: 1; background: var(--bg); }
+</style>
+<div class="shell">
+  <div class="side"><label>Home</label></div>
+  <div class="main"><label>Content</label></div>
+</div>` },
     ],
     "Splitter": [
-      { lang: "C", code: `// Same — Splitter ships as a C-only widget today.
-UiWidget split = ui_splitter();
-ui_splitter_set_ratio(split, 0.3f);
-ui_splitter_add_child(split, leftPane);
-ui_splitter_add_child(split, rightPane);` },
+      { lang: ".uix", code: `<!-- No public Splitter widget is exported currently.
+     Use fixed/flex panels, or implement a draggable divider as <custom>. -->
+<div style="flex-direction: row; flex: 1">
+  <div style="width: 280px"><label>Left panel</label></div>
+  <div style="flex: 1"><label>Right panel</label></div>
+</div>` },
     ],
     "Panel": [
       { lang: ".uix", code: `<!-- "Panel" in .uix is just a div with a background -->
@@ -434,13 +440,17 @@ ui_tab_set_active(tabs, 0);
 ui_widget_add_child(root, tabs);` },
     ],
     "Dialog": [
-      { lang: "C", code: `UiWidget dlg = ui_dialog();
-ui_dialog_set_ok_text(dlg, L"Confirm");
-ui_dialog_set_cancel_text(dlg, L"Cancel");
-ui_dialog_set_show_cancel(dlg, 1);
-ui_dialog_show(dlg, win, L"Delete?",
+      { lang: "C", code: `const wchar_t* buttons[] = { L"Cancel", L"Delete" };
+int result = ui_msgbox(win,
+    L"Delete?",
     L"This action cannot be undone.",
-    on_confirm, NULL);` },
+    buttons, 2,
+    1, 0,
+    UI_MSGBOX_ICON_WARNING);
+
+if (result == 1) {
+    // Delete confirmed.
+}` },
     ],
     "Toast": [
       { lang: "C", code: `// Top + slide-in/out, auto-dismiss
@@ -460,29 +470,34 @@ ui_toast_ex(win, L"Copied", 1500, 1, 0, UI_TOAST_ANIM_FADE);` },
 <div id="myArea">Right-click me</div>
 
 <menu trigger="#myArea" event="rclick">
-  <menuitem id="1" onclick="onCopy" shortcut="Ctrl+C">
+  <menuitem id="copy" @click="onCopy" shortcut="Ctrl+C">
     <svg viewBox="0 0 24 24"><path fill="currentColor" d="..."/></svg>
-    Copy
+    <label>Copy</label>
   </menuitem>
-  <menuitem id="2" onclick="onCut" shortcut="Ctrl+X">Cut</menuitem>
+  <menuitem id="cut" @click="onCut" shortcut="Ctrl+X">
+    <label>Cut</label>
+  </menuitem>
   <separator/>
   <menu text="Recent">                   <!-- nested = submenu -->
-    <menuitem id="10" onclick="onOpen">file1.txt</menuitem>
+    <menuitem id="recent-1" @click="onOpen"><label>file1.txt</label></menuitem>
   </menu>
   <separator/>
-  <menuitem id="3" onclick="onQuit" style="color: #d63a26">Quit</menuitem>
+  <menuitem id="quit" @click="onQuit" style="color: #d63a26">
+    <label>Quit</label>
+  </menuitem>
 </menu>` },
-      { lang: "C", code: `UiMenu menu = ui_menu_create();
-ui_menu_add_item(menu, 1, L"Cut");
-ui_menu_add_item_ex(menu, 2, L"Copy", L"Ctrl+C", svg_icon);
-ui_menu_add_separator(menu);
+      { lang: "C", code: `static void on_menu(UiWindow win, UiMenuItem item, void* ud) {
+    const char* id = ui_menu_item_id(item);
+    if (id && strcmp(id, "copy") == 0) {
+        // Handle Copy.
+    }
+}
 
-UiMenu sub = ui_menu_create();
-ui_menu_add_item(sub, 10, L"Sub Item");
-ui_menu_add_submenu(menu, L"More", sub);
+ui_window_on_menu(win, on_menu, NULL);
 
-ui_menu_show(win, menu, x, y);
-ui_menu_destroy(menu);` },
+// For a <menu id="ctx"> declared in .uix:
+UiMenu menu = ui_page_menu(page, "ctx");
+ui_menu_show(win, menu, x, y);` },
     ],
     "IconButton": [
       { lang: ".uix", code: `<!-- Inline SVG icon as a button — fill="currentColor" picks up the
@@ -505,11 +520,13 @@ ui_widget_on_click(btn, on_settings, NULL);` },
   <label>Popup content</label>
   <button @click="show = false">Close</button>
 </div>` },
-      { lang: "C++", code: `auto* flyout = g_layout.FindAs<ui::FlyoutWidget>("demoFlyout");
-auto* anchor = g_layout.FindById("flyoutBtn");
-flyout->Show(anchor);   // show attached to anchor
-flyout->Hide();
-// placement: top / bottom / left / right / auto` },
+      { lang: ".uix", code: `<!-- No public Flyout widget is exported currently.
+     Use a v-if popup panel anchored by layout. -->
+<button id="flyoutBtn" @click="show = !show">Show Flyout</button>
+<div v-if="show" class="flyout">
+  <label>Popup content</label>
+  <button @click="show = false">Close</button>
+</div>` },
     ],
   };
   return map[controlName] ?? [];

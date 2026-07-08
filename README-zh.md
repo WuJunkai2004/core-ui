@@ -13,7 +13,6 @@
 > **4.1 MB 一个 DLL，就能写出跟 Office / VSCode 同一设计语言的 Windows 桌面应用。**
 > 不要 Chromium、不要 .NET、不要 Qt 几十兆的 moc/uic——一个 C 头文件，一份 `.uix` 单文件组件，搞定。
 
-![version](https://img.shields.io/badge/version-1.7.0.253-blue)
 ![license](https://img.shields.io/badge/license-MIT-green)
 ![platform](https://img.shields.io/badge/platform-Windows%2010%2B-lightgrey)
 ![size](https://img.shields.io/badge/dll-4.1MB-brightgreen)
@@ -234,8 +233,8 @@ ui_theme_set_mode(UI_THEME_LIGHT);
 
 ```c
 int major, minor, patch;
-ui_core_version(&major, &minor, &patch);   // 1, 7, 0
-const char* v = ui_core_version_string();   // "1.7.0.253"
+ui_core_version(&major, &minor, &patch);
+const char* v = ui_core_version_string();   // "MAJOR.MINOR.PATCH.BUILD"
 ```
 
 ## 适用场景
