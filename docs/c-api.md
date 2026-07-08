@@ -366,7 +366,7 @@ ui_window_invoke_sync(win, my_fn, userdata);
 ```
 
 共 60+ 个 `ui_debug_*` 函数。demo 还内置了 `\\.\pipe\ui_core_debug` 命名管道，
-用 PowerShell / Python 一行就能驱动，参考 `scripts/debug-smoke.ps1`。
+用 PowerShell / Python 即可驱动；内部 smoke 脚本不随公开仓发布。
 
 ### 每窗口独立调试管道（自 1.6.0 build 63）
 

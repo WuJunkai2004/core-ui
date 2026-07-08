@@ -6,7 +6,7 @@
 - 端到端 UI 自动化测试
 - 脚本驱动演示 / 录屏
 - AI 代理操作 UI（例如对话式助手）
-- 回归验证（每次发布前跑一遍 `scripts/debug-smoke.ps1`）
+- 回归验证（内部发布前通过 smoke 脚本覆盖核心流程）
 
 ## 架构
 
@@ -387,8 +387,8 @@ UI_API int ui_debug_screenshot_widget(UiWindow win, UiWidget w, const wchar_t* o
   `scroll`（active-page fallback），其余命令走 builtin
 - `demo/ui_demo_html.cpp`（`.uix` demo，对应 `ui-demo-uix.exe`）—— 一行
   `ui_debug_server_start`，无私有命令
-- `scripts/debug-smoke-uix.ps1` —— PowerShell 端到端 smoke：tree dump + hover +
-  click + screenshot + screenshot_widget + wheel + dialog/menu 状态查询
+- PowerShell / Python 脚本可通过 pipe 端到端驱动 tree dump、hover、click、
+  screenshot、screenshot_widget、wheel、dialog/menu 状态查询
 
 ## 相关文件
 
@@ -399,5 +399,4 @@ UI_API int ui_debug_screenshot_widget(UiWindow win, UiWidget w, const wchar_t* o
 - `src/ui/ui_api.cpp` — C API 实现
 - `demo/app.cpp` — `.ui` demo + 自定义 handler 示例
 - `demo/ui_demo_html.cpp` — `.uix` demo (`ui-demo-uix.exe`) 接入示例
-- `scripts/debug-smoke-uix.ps1` — 端到端 smoke 测试
-- `scripts/debug-smoke.ps1` — 跨 9 页的回归脚本
+- 内部 smoke 脚本 — 覆盖端到端和跨页面回归，不随公开仓发布
