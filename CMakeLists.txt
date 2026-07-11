@@ -206,15 +206,20 @@ target_include_directories(core-ui
     PRIVATE src/ui
 )
 
-# ---- ui-demo-uix.exe — single-file .uix demo (embed app + lang + run) ----
-add_executable(ui-demo-uix WIN32
-    demo/ui_demo_uix.cpp
-)
-target_link_libraries(ui-demo-uix PRIVATE core-ui)
-target_include_directories(ui-demo-uix PRIVATE include)
-ui_core_embed_text(ui-demo-uix FILE demo/ui_demo.uix         OUT app_uix.embed.h VAR k_app_uix)
-ui_core_embed_text(ui-demo-uix FILE demo/lang/ui_demo_zh.lang OUT lang_zh.embed.h VAR k_lang_zh)
-ui_core_embed_text(ui-demo-uix FILE demo/lang/ui_demo_en.lang OUT lang_en.embed.h VAR k_lang_en)
+
+option(UI_CORE_BUILD_DEMO "Build the ui-demo-uix.exe single-file demo" ON)
+
+if(UI_CORE_BUILD_DEMO)
+    # ---- ui-demo-uix.exe — single-file .uix demo (embed app + lang + run) ----
+    add_executable(ui-demo-uix WIN32
+        demo/ui_demo_uix.cpp
+    )
+    target_link_libraries(ui-demo-uix PRIVATE core-ui)
+    target_include_directories(ui-demo-uix PRIVATE include)
+    ui_core_embed_text(ui-demo-uix FILE demo/ui_demo.uix         OUT app_uix.embed.h VAR k_app_uix)
+    ui_core_embed_text(ui-demo-uix FILE demo/lang/ui_demo_zh.lang OUT lang_zh.embed.h VAR k_lang_zh)
+    ui_core_embed_text(ui-demo-uix FILE demo/lang/ui_demo_en.lang OUT lang_en.embed.h VAR k_lang_en)
+endif()
 
 set(UI_CORE_VERSION_DEFS
     UI_CORE_VERSION_TAG="${UI_CORE_VERSION_TAG}"
